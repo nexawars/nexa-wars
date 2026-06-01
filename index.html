@@ -1,0 +1,1103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEXA WARS ⚔️</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg: #060612;
+  --panel: #0d0d1f;
+  --border: #ffffff12;
+  --text: #e8e8ff;
+  --dim: #ffffff40;
+  --nexa: #00FFB3;
+  --btc: #F7931A;
+  --eth: #627EEA;
+  --bnb: #F3BA2F;
+  --sol: #9945FF;
+  --xrp: #00AAE4;
+  --doge: #C2A633;
+  --avax: #E84142;
+  --danger: #FF3355;
+  --success: #00FFB3;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, #0a0a3a, transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, #0a1a0a, transparent);
+}
+
+/* ========== SCREENS ========== */
+.screen { display:none; min-height:100vh; flex-direction:column; align-items:center; padding:20px; }
+.screen.active { display:flex; }
+
+/* ========== INTRO ========== */
+#intro { justify-content:center; gap:28px; text-align:center; }
+
+.logo-wrap { position:relative; }
+.logo-title {
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2.2rem,10vw,4rem);
+  font-weight:900;
+  background: linear-gradient(135deg, #F7931A 0%, #00FFB3 40%, #9945FF 80%, #F7931A 100%);
+  background-size:300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation: logoAnim 4s linear infinite;
+  letter-spacing:3px;
+}
+@keyframes logoAnim { 0%{background-position:0%} 100%{background-position:300%} }
+
+.logo-sub {
+  font-family:'Orbitron',monospace;
+  font-size:0.65rem;
+  letter-spacing:6px;
+  color:#ffffff35;
+  margin-top:4px;
+  text-transform:uppercase;
+}
+
+.hero-fighters {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+  font-size:3.5rem;
+  filter:drop-shadow(0 0 20px #F7931A80);
+  animation: heroFloat 3s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+.vs-badge {
+  font-family:'Orbitron',monospace;
+  font-size:1.4rem;
+  font-weight:900;
+  color:var(--danger);
+  text-shadow:0 0 20px var(--danger);
+  animation:vsPulse 0.8s ease infinite alternate;
+}
+@keyframes vsPulse {
+  from{text-shadow:0 0 10px var(--danger)}
+  to{text-shadow:0 0 35px var(--danger),0 0 70px #ff000050}
+}
+
+.player-info-box {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px 28px;
+  display:flex;
+  gap:30px;
+  justify-content:center;
+}
+.info-item { text-align:center; }
+.info-val {
+  font-family:'Orbitron',monospace;
+  font-size:1.4rem;
+  font-weight:900;
+  color:var(--nexa);
+}
+.info-key { font-size:0.7rem; color:var(--dim); margin-top:2px; letter-spacing:1px; text-transform:uppercase; }
+
+.btn-primary {
+  background:linear-gradient(135deg,#F7931A,#9945FF);
+  border:none;
+  color:#fff;
+  font-family:'Orbitron',monospace;
+  font-size:1.1rem;
+  font-weight:700;
+  padding:16px 48px;
+  border-radius:50px;
+  cursor:pointer;
+  letter-spacing:3px;
+  box-shadow:0 0 30px #F7931A40;
+  transition:all 0.2s;
+  width:100%;
+  max-width:300px;
+}
+.btn-primary:hover{transform:scale(1.03);box-shadow:0 0 50px #F7931A60}
+.btn-primary:active{transform:scale(0.97)}
+
+.btn-secondary {
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--dim);
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  font-weight:600;
+  padding:12px 30px;
+  border-radius:50px;
+  cursor:pointer;
+  letter-spacing:2px;
+  transition:all 0.2s;
+  width:100%;
+  max-width:300px;
+}
+.btn-secondary:hover{border-color:#ffffff30;color:var(--text)}
+
+/* ========== CHARACTER SELECT ========== */
+#select { gap:20px; padding-top:30px; }
+
+.screen-header {
+  text-align:center;
+  width:100%;
+}
+.screen-label {
+  font-family:'Orbitron',monospace;
+  font-size:0.6rem;
+  letter-spacing:5px;
+  color:var(--dim);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.screen-heading {
+  font-family:'Orbitron',monospace;
+  font-size:1.2rem;
+  font-weight:700;
+  color:var(--text);
+}
+.screen-heading span { color:var(--nexa); }
+
+.chars-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  width:100%;
+  max-width:420px;
+}
+
+.char-card {
+  background:var(--panel);
+  border:2px solid var(--border);
+  border-radius:14px;
+  padding:12px 6px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s;
+  position:relative;
+  overflow:hidden;
+}
+.char-card::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:opacity 0.2s;
+}
+.char-card:hover { transform:translateY(-3px); }
+.char-card.selected::after {
+  content:'✓';
+  position:absolute;
+  top:4px; right:6px;
+  font-size:0.75rem;
+  font-weight:900;
+}
+
+.char-card[data-id="nexa"] { --cc:#00FFB3; }
+.char-card[data-id="bitcor"] { --cc:#F7931A; }
+.char-card[data-id="ethron"] { --cc:#627EEA; }
+.char-card[data-id="bnblade"] { --cc:#F3BA2F; }
+.char-card[data-id="solaris"] { --cc:#9945FF; }
+.char-card[data-id="xrpier"] { --cc:#00AAE4; }
+.char-card[data-id="dogeron"] { --cc:#C2A633; }
+.char-card[data-id="avaxion"] { --cc:#E84142; }
+
+.char-card.selected {
+  border-color:var(--cc);
+  box-shadow:0 0 20px color-mix(in srgb,var(--cc) 30%,transparent);
+}
+.char-card.selected::after { color:var(--cc); }
+
+.char-emoji { font-size:2rem; display:block; margin-bottom:4px; }
+.char-name {
+  font-family:'Orbitron',monospace;
+  font-size:0.5rem;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:1px;
+}
+.char-power {
+  font-size:0.6rem;
+  color:var(--dim);
+  margin-top:2px;
+}
+.char-power span { color:var(--cc,var(--nexa)); font-weight:700; }
+
+.char-stats {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 20px;
+  width:100%;
+  max-width:420px;
+  display:none;
+  gap:15px;
+  align-items:center;
+}
+.char-stats.visible { display:flex; }
+.char-stats-avatar { font-size:2.5rem; }
+.char-stats-info { flex:1; }
+.char-stats-name {
+  font-family:'Orbitron',monospace;
+  font-size:0.9rem;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.stat-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.stat-bar-label { font-size:0.65rem; color:var(--dim); width:30px; text-transform:uppercase; }
+.stat-bar-bg { flex:1; height:6px; background:#ffffff10; border-radius:3px; overflow:hidden; }
+.stat-bar-fill { height:100%; border-radius:3px; transition:width 0.4s ease; }
+.stat-bar-val { font-family:'Orbitron',monospace; font-size:0.65rem; width:28px; text-align:right; }
+
+.btn-fight {
+  background:linear-gradient(135deg,var(--danger),#ff6600);
+  border:none;
+  color:#fff;
+  font-family:'Orbitron',monospace;
+  font-size:1.1rem;
+  font-weight:900;
+  padding:16px 48px;
+  border-radius:50px;
+  cursor:pointer;
+  letter-spacing:4px;
+  box-shadow:0 0 25px #ff335540;
+  transition:all 0.2s;
+  width:100%;
+  max-width:300px;
+  opacity:0.35;
+  pointer-events:none;
+}
+.btn-fight.ready { opacity:1; pointer-events:all; }
+.btn-fight.ready:hover { transform:scale(1.03); box-shadow:0 0 45px #ff335560; }
+.btn-fight.ready:active { transform:scale(0.97); }
+
+/* ========== BATTLE ========== */
+#battle { gap:12px; padding:15px; justify-content:flex-start; padding-top:18px; }
+
+.battle-topbar {
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.round-pill {
+  font-family:'Orbitron',monospace;
+  font-size:0.7rem;
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:5px 14px;
+  border-radius:20px;
+  color:var(--dim);
+  letter-spacing:2px;
+}
+.nexa-pill {
+  font-family:'Orbitron',monospace;
+  font-size:0.8rem;
+  color:var(--nexa);
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+/* HP Bars */
+.hp-section {
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.hp-row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.hp-row.enemy { flex-direction:row-reverse; }
+.hp-avatar { font-size:1.5rem; }
+.hp-info { flex:1; }
+.hp-name-row { display:flex; justify-content:space-between; margin-bottom:4px; }
+.hp-name {
+  font-family:'Orbitron',monospace;
+  font-size:0.65rem;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.hp-val {
+  font-family:'Orbitron',monospace;
+  font-size:0.65rem;
+  color:var(--dim);
+}
+.hp-bar-bg { width:100%; height:10px; background:#ffffff10; border-radius:5px; overflow:hidden; }
+.hp-bar-fill {
+  height:100%;
+  border-radius:5px;
+  transition:width 0.5s ease;
+}
+.hp-bar-fill.player { background:linear-gradient(90deg,#00FFB3,#00cc8a); }
+.hp-bar-fill.enemy { background:linear-gradient(90deg,#E84142,#ff6b6b); }
+
+/* Arena */
+.arena {
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:15px;
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  min-height:160px;
+  position:relative;
+  overflow:hidden;
+}
+.arena::before {
+  content:'';
+  position:absolute;
+  bottom:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#ffffff15,transparent);
+}
+
+.fighter-wrap { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.fighter-wrap.enemy-wrap { flex-direction:column-reverse; }
+
+.fighter-char {
+  font-size:5rem;
+  transition:transform 0.15s;
+  filter:drop-shadow(0 0 15px #ffffff20);
+  position:relative;
+}
+.fighter-char.shake { animation:shake 0.35s ease; }
+.fighter-char.attack-anim { animation:attackMove 0.3s ease; }
+.fighter-char.enemy-attack { animation:enemyAttackMove 0.3s ease; }
+
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-12px)}
+  40%{transform:translateX(12px)}
+  60%{transform:translateX(-8px)}
+  80%{transform:translateX(8px)}
+}
+@keyframes attackMove {
+  0%{transform:translateX(0)}
+  50%{transform:translateX(40px) scale(1.1)}
+  100%{transform:translateX(0)}
+}
+@keyframes enemyAttackMove {
+  0%{transform:translateX(0)}
+  50%{transform:translateX(-40px) scale(1.1)}
+  100%{transform:translateX(0)}
+}
+
+.fighter-name {
+  font-family:'Orbitron',monospace;
+  font-size:0.55rem;
+  letter-spacing:2px;
+  color:var(--dim);
+}
+.fighter-label {
+  font-size:0.6rem;
+  color:var(--dim);
+  background:#ffffff08;
+  padding:2px 8px;
+  border-radius:10px;
+}
+
+.damage-float {
+  position:absolute;
+  font-family:'Orbitron',monospace;
+  font-size:1.5rem;
+  font-weight:900;
+  pointer-events:none;
+  animation:floatUp 1s ease forwards;
+  z-index:10;
+}
+@keyframes floatUp {
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-60px) scale(1.3)}
+}
+.damage-float.hit { color:#FF3355; text-shadow:0 0 15px #FF3355; }
+.damage-float.block { color:#627EEA; font-size:1rem; }
+.damage-float.miss { color:#F3BA2F; font-size:1rem; }
+
+/* Turn Banner */
+.turn-banner {
+  width:100%;
+  text-align:center;
+  padding:10px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.turn-text {
+  font-family:'Orbitron',monospace;
+  font-size:0.75rem;
+  letter-spacing:2px;
+  color:var(--dim);
+}
+.turn-text span { color:var(--nexa); font-size:0.9rem; }
+
+/* Action Zones */
+.zones-section { width:100%; }
+.zones-label {
+  font-family:'Orbitron',monospace;
+  font-size:0.6rem;
+  letter-spacing:3px;
+  color:var(--dim);
+  text-align:center;
+  margin-bottom:10px;
+  text-transform:uppercase;
+}
+.zones-row {
+  display:flex;
+  gap:10px;
+  justify-content:center;
+}
+.zone-btn {
+  flex:1;
+  max-width:110px;
+  background:var(--panel);
+  border:2px solid var(--border);
+  border-radius:16px;
+  padding:14px 8px;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.zone-btn:hover { transform:translateY(-3px); border-color:#ffffff25; }
+.zone-btn:active { transform:scale(0.96); }
+.zone-btn.selected { border-color:var(--nexa); box-shadow:0 0 20px #00FFB330; }
+.zone-btn.disabled { opacity:0.3; pointer-events:none; }
+
+.zone-icon { font-size:1.8rem; display:block; margin-bottom:4px; }
+.zone-name {
+  font-family:'Orbitron',monospace;
+  font-size:0.55rem;
+  font-weight:700;
+  letter-spacing:1px;
+  display:block;
+}
+.zone-dmg {
+  font-size:0.6rem;
+  color:var(--dim);
+  margin-top:2px;
+  display:block;
+}
+.zone-chance {
+  font-size:0.55rem;
+  color:var(--nexa);
+  display:block;
+}
+
+/* Battle Log */
+.battle-log {
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 14px;
+  max-height:80px;
+  overflow-y:auto;
+}
+.log-line {
+  font-size:0.72rem;
+  color:var(--dim);
+  margin-bottom:3px;
+  line-height:1.4;
+}
+.log-line.hit-log { color:#FF335590; }
+.log-line.block-log { color:#627EEA90; }
+.log-line.miss-log { color:#F3BA2F90; }
+
+/* ========== RESULT SCREEN ========== */
+#result { justify-content:center; gap:24px; text-align:center; }
+
+.result-emoji { font-size:5rem; animation:resultPop 0.5s ease; }
+@keyframes resultPop {
+  0%{transform:scale(0)}
+  70%{transform:scale(1.2)}
+  100%{transform:scale(1)}
+}
+.result-title {
+  font-family:'Orbitron',monospace;
+  font-size:2rem;
+  font-weight:900;
+}
+.result-title.win { color:var(--nexa); text-shadow:0 0 30px var(--nexa); }
+.result-title.lose { color:var(--danger); text-shadow:0 0 30px var(--danger); }
+
+.result-rewards {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px 28px;
+  display:flex;
+  gap:24px;
+}
+.reward-item { text-align:center; }
+.reward-val {
+  font-family:'Orbitron',monospace;
+  font-size:1.3rem;
+  font-weight:900;
+  color:var(--nexa);
+}
+.reward-key { font-size:0.65rem; color:var(--dim); margin-top:3px; letter-spacing:1px; text-transform:uppercase; }
+
+.result-summary {
+  font-size:0.85rem;
+  color:var(--dim);
+  line-height:1.6;
+  max-width:280px;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#ffffff15; border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div id="intro" class="screen active">
+  <div class="logo-wrap">
+    <div class="logo-title">NEXA WARS</div>
+    <div class="logo-sub">Crypto Fighter Arena</div>
+  </div>
+
+  <div class="hero-fighters">
+    <span>🟠</span>
+    <span class="vs-badge">VS</span>
+    <span>💎</span>
+  </div>
+
+  <div class="player-info-box">
+    <div class="info-item">
+      <div class="info-val" id="playerLevel">1</div>
+      <div class="info-key">Level</div>
+    </div>
+    <div class="info-item">
+      <div class="info-val" id="playerNexa">0</div>
+      <div class="info-key">NEXA</div>
+    </div>
+    <div class="info-item">
+      <div class="info-val" id="playerWins">0</div>
+      <div class="info-key">Wins</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="showScreen('select')">⚔️ FIGHT NOW</button>
+  <button class="btn-secondary" onclick="showScreen('select')">SELECT CHARACTER</button>
+</div>
+
+<!-- ===== CHARACTER SELECT ===== -->
+<div id="select" class="screen">
+  <div class="screen-header">
+    <div class="screen-label">Choose Your Fighter</div>
+    <div class="screen-heading">SELECT <span>CHARACTER</span></div>
+  </div>
+
+  <div class="chars-grid" id="charsGrid"></div>
+
+  <div class="char-stats" id="charStats">
+    <div class="char-stats-avatar" id="statsAvatar">💎</div>
+    <div class="char-stats-info">
+      <div class="char-stats-name" id="statsName">NEXA</div>
+      <div class="stat-bar-row">
+        <div class="stat-bar-label">HP</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" id="barHP" style="background:#00FFB3;width:0%"></div></div>
+        <div class="stat-bar-val" id="valHP">0</div>
+      </div>
+      <div class="stat-bar-row">
+        <div class="stat-bar-label">ATK</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" id="barATK" style="background:#F7931A;width:0%"></div></div>
+        <div class="stat-bar-val" id="valATK">0</div>
+      </div>
+      <div class="stat-bar-row">
+        <div class="stat-bar-label">SPD</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" id="barSPD" style="background:#627EEA;width:0%"></div></div>
+        <div class="stat-bar-val" id="valSPD">0</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-fight" id="btnFight" onclick="startBattle()">⚔️ FIGHT</button>
+  <button class="btn-secondary" onclick="showScreen('intro')" style="margin-top:6px">← BACK</button>
+</div>
+
+<!-- ===== BATTLE ===== -->
+<div id="battle" class="screen">
+  <div class="battle-topbar">
+    <div class="round-pill">ROUND <span id="roundNum">1</span></div>
+    <div class="nexa-pill">💎 <span id="battleNexa">0</span> NEXA</div>
+  </div>
+
+  <div class="hp-section">
+    <div class="hp-row enemy">
+      <div class="hp-avatar" id="enemyHPAvatar">🟠</div>
+      <div class="hp-info">
+        <div class="hp-name-row">
+          <span class="hp-name" id="enemyHPName">ENEMY</span>
+          <span class="hp-val"><span id="enemyHPVal">100</span>/<span id="enemyHPMax">100</span></span>
+        </div>
+        <div class="hp-bar-bg"><div class="hp-bar-fill enemy" id="enemyHPBar" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="hp-row">
+      <div class="hp-avatar" id="playerHPAvatar">💎</div>
+      <div class="hp-info">
+        <div class="hp-name-row">
+          <span class="hp-name" id="playerHPName">YOU</span>
+          <span class="hp-val"><span id="playerHPVal">100</span>/<span id="playerHPMax">100</span></span>
+        </div>
+        <div class="hp-bar-bg"><div class="hp-bar-fill player" id="playerHPBar" style="width:100%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arena" id="arena">
+    <div class="fighter-wrap">
+      <div class="fighter-char" id="playerFighter">💎</div>
+      <div class="fighter-name" id="playerFighterName">NEXA</div>
+      <div class="fighter-label">YOU</div>
+    </div>
+    <div class="fighter-wrap enemy-wrap">
+      <div class="fighter-char" id="enemyFighter">🟠</div>
+      <div class="fighter-name" id="enemyFighterName">BITCOR</div>
+      <div class="fighter-label">ENEMY</div>
+    </div>
+  </div>
+
+  <div class="turn-banner">
+    <div class="turn-text" id="turnText">YOUR TURN — <span>CHOOSE ATTACK ZONE</span></div>
+  </div>
+
+  <div class="zones-section">
+    <div class="zones-label" id="zonesLabel">⚔️ Select Attack Zone</div>
+    <div class="zones-row">
+      <div class="zone-btn" id="zoneHead" onclick="selectZone('head')">
+        <span class="zone-icon">💀</span>
+        <span class="zone-name">HEAD</span>
+        <span class="zone-dmg">40 DMG</span>
+        <span class="zone-chance">40% hit</span>
+      </div>
+      <div class="zone-btn" id="zoneChest" onclick="selectZone('chest')">
+        <span class="zone-icon">💪</span>
+        <span class="zone-name">CHEST</span>
+        <span class="zone-dmg">25 DMG</span>
+        <span class="zone-chance">70% hit</span>
+      </div>
+      <div class="zone-btn" id="zoneFeet" onclick="selectZone('feet')">
+        <span class="zone-icon">🦵</span>
+        <span class="zone-name">FEET</span>
+        <span class="zone-dmg">15 DMG</span>
+        <span class="zone-chance">95% hit</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="battle-log" id="battleLog">
+    <div class="log-line">⚔️ Battle started! Choose your attack zone...</div>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="result" class="screen">
+  <div class="result-emoji" id="resultEmoji">🏆</div>
+  <div class="result-title" id="resultTitle">VICTORY!</div>
+  <div class="result-summary" id="resultSummary">Amazing fight! You defeated your opponent!</div>
+  <div class="result-rewards" id="resultRewards">
+    <div class="reward-item">
+      <div class="reward-val" id="rewardNexa">+50</div>
+      <div class="reward-key">NEXA</div>
+    </div>
+    <div class="reward-item">
+      <div class="reward-val" id="rewardXP">+120</div>
+      <div class="reward-key">XP</div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="playAgain()">⚔️ PLAY AGAIN</button>
+  <button class="btn-secondary" onclick="showScreen('intro')" style="margin-top:8px">🏠 HOME</button>
+</div>
+
+<script>
+// ===== TELEGRAM INIT =====
+if (window.Telegram && window.Telegram.WebApp) {
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
+
+// ===== GAME DATA =====
+const CHARACTERS = [
+  { id:'nexa',    emoji:'💎', name:'NEXA',    hp:140, atk:95, spd:90, color:'#00FFB3', special:true },
+  { id:'bitcor',  emoji:'🟠', name:'BITCOR',  hp:120, atk:85, spd:60, color:'#F7931A' },
+  { id:'ethron',  emoji:'🔷', name:'ETHRON',  hp:110, atk:90, spd:80, color:'#627EEA' },
+  { id:'bnblade', emoji:'🟡', name:'BNBLADE', hp:115, atk:80, spd:75, color:'#F3BA2F' },
+  { id:'solaris', emoji:'🟣', name:'SOLARIS', hp:100, atk:88, spd:95, color:'#9945FF' },
+  { id:'xrpier',  emoji:'🔵', name:'XRPIER',  hp:105, atk:82, spd:85, color:'#00AAE4' },
+  { id:'dogeron', emoji:'🐕', name:'DOGERON', hp:108, atk:78, spd:88, color:'#C2A633' },
+  { id:'avaxion', emoji:'🔴', name:'AVAXION', hp:112, atk:92, spd:70, color:'#E84142' },
+];
+
+const ZONES = {
+  head:  { dmg:40, chance:0.40, icon:'💀', name:'HEAD'  },
+  chest: { dmg:25, chance:0.70, icon:'💪', name:'CHEST' },
+  feet:  { dmg:15, chance:0.95, icon:'🦵', name:'FEET'  },
+};
+
+// Player State
+let playerState = JSON.parse(localStorage.getItem('nexawars') || 'null') || {
+  level:1, nexa:0, wins:0, xp:0, xpToNext:200
+};
+
+// Battle State
+let battle = {
+  playerChar: null,
+  enemyChar: null,
+  playerHP: 100,
+  enemyHP: 100,
+  playerMaxHP: 100,
+  enemyMaxHP: 100,
+  round: 1,
+  phase: 'attack', // attack | defend | processing
+  selectedZone: null,
+  isPlayerTurn: true,
+  nexaEarned: 0,
+};
+
+// ===== SAVE/LOAD =====
+function saveState() {
+  localStorage.setItem('nexawars', JSON.stringify(playerState));
+}
+
+// ===== SCREENS =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'intro') updateIntro();
+}
+
+function updateIntro() {
+  document.getElementById('playerLevel').textContent = playerState.level;
+  document.getElementById('playerNexa').textContent = playerState.nexa;
+  document.getElementById('playerWins').textContent = playerState.wins;
+}
+
+// ===== BUILD CHARS GRID =====
+function buildCharsGrid() {
+  const grid = document.getElementById('charsGrid');
+  grid.innerHTML = '';
+  CHARACTERS.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'char-card';
+    div.dataset.id = c.id;
+    div.innerHTML = `
+      <span class="char-emoji">${c.emoji}</span>
+      <span class="char-name">${c.name}</span>
+      <span class="char-power">HP <span>${c.hp}</span></span>
+    `;
+    div.onclick = () => selectChar(c.id);
+    grid.appendChild(div);
+  });
+}
+
+let selectedCharId = null;
+
+function selectChar(id) {
+  selectedCharId = id;
+  document.querySelectorAll('.char-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.id === id);
+  });
+
+  const ch = CHARACTERS.find(c => c.id === id);
+  const stats = document.getElementById('charStats');
+  stats.classList.add('visible');
+  document.getElementById('statsAvatar').textContent = ch.emoji;
+  document.getElementById('statsName').textContent = ch.name + (ch.special ? ' 👑' : '');
+
+  const hpPct = Math.round((ch.hp / 140) * 100);
+  const atkPct = Math.round((ch.atk / 100) * 100);
+  const spdPct = Math.round((ch.spd / 100) * 100);
+
+  setTimeout(() => {
+    document.getElementById('barHP').style.cssText = `background:${ch.color};width:${hpPct}%`;
+    document.getElementById('barATK').style.cssText = `background:#F7931A;width:${atkPct}%`;
+    document.getElementById('barSPD').style.cssText = `background:#627EEA;width:${spdPct}%`;
+  }, 50);
+
+  document.getElementById('valHP').textContent = ch.hp;
+  document.getElementById('valATK').textContent = ch.atk;
+  document.getElementById('valSPD').textContent = ch.spd;
+
+  document.getElementById('btnFight').classList.add('ready');
+}
+
+// ===== START BATTLE =====
+function startBattle() {
+  if (!selectedCharId) return;
+
+  const playerChar = CHARACTERS.find(c => c.id === selectedCharId);
+  // Pick random enemy (not same as player)
+  const enemies = CHARACTERS.filter(c => c.id !== selectedCharId);
+  const enemyChar = enemies[Math.floor(Math.random() * enemies.length)];
+
+  // Calculate HP based on level
+  const hpBonus = (playerState.level - 1) * 20;
+  battle.playerChar = playerChar;
+  battle.enemyChar = enemyChar;
+  battle.playerMaxHP = playerChar.hp + hpBonus;
+  battle.enemyMaxHP = enemyChar.hp;
+  battle.playerHP = battle.playerMaxHP;
+  battle.enemyHP = battle.enemyMaxHP;
+  battle.round = 1;
+  battle.phase = 'attack';
+  battle.selectedZone = null;
+  battle.isPlayerTurn = Math.random() > 0.5;
+  battle.nexaEarned = 0;
+
+  // Update UI
+  document.getElementById('playerFighter').textContent = playerChar.emoji;
+  document.getElementById('playerFighterName').textContent = playerChar.name;
+  document.getElementById('enemyFighter').textContent = enemyChar.emoji;
+  document.getElementById('enemyFighterName').textContent = enemyChar.name;
+  document.getElementById('playerHPAvatar').textContent = playerChar.emoji;
+  document.getElementById('enemyHPAvatar').textContent = enemyChar.emoji;
+  document.getElementById('playerHPName').textContent = playerChar.name;
+  document.getElementById('enemyHPName').textContent = enemyChar.name;
+
+  updateBattleHP();
+  clearLog();
+  addLog(`⚔️ ${playerChar.name} vs ${enemyChar.name} — FIGHT!`);
+
+  document.getElementById('battleNexa').textContent = playerState.nexa;
+
+  showScreen('battle');
+  updateTurnUI();
+}
+
+// ===== UPDATE HP BARS =====
+function updateBattleHP() {
+  const pPct = Math.max(0, (battle.playerHP / battle.playerMaxHP) * 100);
+  const ePct = Math.max(0, (battle.enemyHP / battle.enemyMaxHP) * 100);
+
+  document.getElementById('playerHPBar').style.width = pPct + '%';
+  document.getElementById('enemyHPBar').style.width = ePct + '%';
+  document.getElementById('playerHPVal').textContent = Math.max(0, battle.playerHP);
+  document.getElementById('playerHPMax').textContent = battle.playerMaxHP;
+  document.getElementById('enemyHPVal').textContent = Math.max(0, battle.enemyHP);
+  document.getElementById('enemyHPMax').textContent = battle.enemyMaxHP;
+  document.getElementById('roundNum').textContent = battle.round;
+}
+
+// ===== TURN UI =====
+function updateTurnUI() {
+  const zones = document.querySelectorAll('.zone-btn');
+
+  if (battle.phase === 'attack') {
+    document.getElementById('turnText').innerHTML = 'YOUR TURN — <span>CHOOSE ATTACK ZONE</span>';
+    document.getElementById('zonesLabel').textContent = '⚔️ Select Attack Zone';
+    zones.forEach(z => z.classList.remove('disabled', 'selected'));
+    battle.selectedZone = null;
+  } else if (battle.phase === 'defend') {
+    document.getElementById('turnText').innerHTML = 'ENEMY ATTACKS! — <span>CHOOSE DEFENSE ZONE</span>';
+    document.getElementById('zonesLabel').textContent = '🛡️ Select Defense Zone';
+    zones.forEach(z => z.classList.remove('disabled', 'selected'));
+    battle.selectedZone = null;
+  } else {
+    zones.forEach(z => z.classList.add('disabled'));
+  }
+}
+
+// ===== SELECT ZONE =====
+function selectZone(zone) {
+  if (battle.phase === 'processing') return;
+
+  battle.selectedZone = zone;
+  document.querySelectorAll('.zone-btn').forEach(z => z.classList.remove('selected'));
+  document.getElementById('zone' + zone.charAt(0).toUpperCase() + zone.slice(1)).classList.add('selected');
+
+  if (battle.phase === 'attack') {
+    setTimeout(() => processPlayerAttack(), 400);
+  } else if (battle.phase === 'defend') {
+    setTimeout(() => processEnemyAttack(), 400);
+  }
+}
+
+// ===== PLAYER ATTACKS =====
+function processPlayerAttack() {
+  battle.phase = 'processing';
+  updateTurnUI();
+
+  const zone = ZONES[battle.selectedZone];
+  const hit = Math.random() < zone.chance;
+
+  const playerEl = document.getElementById('playerFighter');
+  const enemyEl = document.getElementById('enemyFighter');
+
+  playerEl.classList.add('attack-anim');
+  setTimeout(() => playerEl.classList.remove('attack-anim'), 350);
+
+  if (hit) {
+    battle.enemyHP -= zone.dmg;
+    enemyEl.classList.add('shake');
+    setTimeout(() => enemyEl.classList.remove('shake'), 350);
+    showDamage(zone.dmg, 'enemy', 'hit');
+    addLog(`✅ Your ${zone.name} hit! -${zone.dmg} HP to ${battle.enemyChar.name}`, 'hit-log');
+  } else {
+    showDamage('MISS', 'enemy', 'miss');
+    addLog(`❌ Your ${zone.name} missed!`, 'miss-log');
+  }
+
+  updateBattleHP();
+
+  setTimeout(() => {
+    if (battle.enemyHP <= 0) {
+      endBattle(true);
+    } else {
+      battle.phase = 'defend';
+      updateTurnUI();
+    }
+  }, 800);
+}
+
+// ===== ENEMY ATTACKS =====
+function processEnemyAttack() {
+  battle.phase = 'processing';
+  updateTurnUI();
+
+  // Enemy picks random zone to attack
+  const zoneKeys = Object.keys(ZONES);
+  const enemyZone = zoneKeys[Math.floor(Math.random() * zoneKeys.length)];
+  const playerDefense = battle.selectedZone;
+  const zone = ZONES[enemyZone];
+
+  const enemyEl = document.getElementById('enemyFighter');
+  const playerEl = document.getElementById('playerFighter');
+
+  enemyEl.classList.add('enemy-attack');
+  setTimeout(() => enemyEl.classList.remove('enemy-attack'), 350);
+
+  if (enemyZone === playerDefense) {
+    // Blocked!
+    showDamage('BLOCK!', 'player', 'block');
+    addLog(`🛡️ You blocked ${battle.enemyChar.name}'s ${zone.name} attack!`, 'block-log');
+  } else {
+    const hit = Math.random() < zone.chance;
+    if (hit) {
+      battle.playerHP -= zone.dmg;
+      playerEl.classList.add('shake');
+      setTimeout(() => playerEl.classList.remove('shake'), 350);
+      showDamage(zone.dmg, 'player', 'hit');
+      addLog(`💥 ${battle.enemyChar.name} hit your ${zone.name}! -${zone.dmg} HP`, 'hit-log');
+    } else {
+      showDamage('MISS', 'player', 'miss');
+      addLog(`${battle.enemyChar.name} missed!`, 'miss-log');
+    }
+  }
+
+  updateBattleHP();
+
+  setTimeout(() => {
+    if (battle.playerHP <= 0) {
+      endBattle(false);
+    } else {
+      battle.round++;
+      battle.phase = 'attack';
+      updateTurnUI();
+      addLog(`--- Round ${battle.round} ---`);
+    }
+  }, 800);
+}
+
+// ===== DAMAGE FLOAT =====
+function showDamage(val, target, type) {
+  const arena = document.getElementById('arena');
+  const el = document.createElement('div');
+  el.className = `damage-float ${type}`;
+  el.textContent = type === 'hit' ? `-${val}` : val;
+  el.style.cssText = `left:${target==='enemy'?'65%':'25%'};top:30%;`;
+  arena.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+// ===== LOG =====
+function addLog(msg, cls='') {
+  const log = document.getElementById('battleLog');
+  const line = document.createElement('div');
+  line.className = `log-line ${cls}`;
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('battleLog').innerHTML = '';
+}
+
+// ===== END BATTLE =====
+function endBattle(playerWon) {
+  setTimeout(() => {
+    if (playerWon) {
+      const nexaEarned = 30 + (battle.round * 5) + (playerState.level * 10);
+      const xpEarned = 100 + (battle.round * 10);
+      playerState.nexa += nexaEarned;
+      playerState.wins += 1;
+      playerState.xp += xpEarned;
+
+      if (playerState.xp >= playerState.xpToNext) {
+        playerState.level += 1;
+        playerState.xp -= playerState.xpToNext;
+        playerState.xpToNext = Math.round(playerState.xpToNext * 1.5);
+      }
+      saveState();
+
+      document.getElementById('resultEmoji').textContent = '🏆';
+      document.getElementById('resultTitle').className = 'result-title win';
+      document.getElementById('resultTitle').textContent = 'VICTORY!';
+      document.getElementById('resultSummary').textContent = `You defeated ${battle.enemyChar.name} in ${battle.round} rounds!`;
+      document.getElementById('rewardNexa').textContent = `+${nexaEarned}`;
+      document.getElementById('rewardXP').textContent = `+${xpEarned}`;
+    } else {
+      const nexaEarned = 10;
+      playerState.nexa += nexaEarned;
+      saveState();
+
+      document.getElementById('resultEmoji').textContent = '💀';
+      document.getElementById('resultTitle').className = 'result-title lose';
+      document.getElementById('resultTitle').textContent = 'DEFEATED!';
+      document.getElementById('resultSummary').textContent = `${battle.enemyChar.name} was too strong. Train harder!`;
+      document.getElementById('rewardNexa').textContent = `+${nexaEarned}`;
+      document.getElementById('rewardXP').textContent = `+20`;
+    }
+
+    showScreen('result');
+  }, 600);
+}
+
+// ===== PLAY AGAIN =====
+function playAgain() {
+  showScreen('select');
+}
+
+// ===== INIT =====
+buildCharsGrid();
+updateIntro();
+</script>
+</body>
+</html>
